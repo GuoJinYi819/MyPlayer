@@ -1,13 +1,10 @@
 package com.example.myplayer.util
 
 import android.content.Intent
-import android.os.Build
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.example.myplayer.R
 import com.example.myplayer.ui.activity.SettingActivity
-import java.util.*
 
 
 /**ClassName: MyPlayer
@@ -39,5 +36,9 @@ interface ToolBarManager {
                 return true
             }
         })
+    }
+    //设置界面的 toolbar
+    fun initSettingToolbar(){
+        toolbar.setTitle("设置界面")
     }
 }
