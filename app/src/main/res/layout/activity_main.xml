@@ -6,12 +6,20 @@
     android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context=".ui.activity.MainActivity">
-    <ImageView
-        android:background="#000"
+    <include layout="@layout/toolbar"/>
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_weight="1"
+        android:layout_height="0dp">
 
-    </ImageView>
+    </FrameLayout>
+
+    <com.roughike.bottombar.BottomBar
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:bb_tabXmlResource="@xml/bottombar_tabs" />
 
 
 </LinearLayout>
