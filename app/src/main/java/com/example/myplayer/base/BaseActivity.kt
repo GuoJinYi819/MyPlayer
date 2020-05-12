@@ -3,7 +3,9 @@ package com.example.myplayer.base
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myplayer.ui.activity.MainActivity
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
 /**ClassName: MyPlayer
@@ -35,6 +37,14 @@ abstract class BaseActivity:AppCompatActivity(),AnkoLogger{
     //吐司
     protected fun myToast(msg:String){
         runOnUiThread { toast(msg) }
+    }
+
+    //开启一个activity 并且销毁当前界面
+    //reified 关键字 指定 泛型T 上限为BaseActivity的子类
+    inline fun <reified T:BaseActivity>startActivityAndFinish(){
+        startActivity<T>()
+        //销毁当前页面
+        finish()
     }
 
 }

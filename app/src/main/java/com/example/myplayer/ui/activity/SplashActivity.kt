@@ -17,9 +17,7 @@ class SplashActivity:BaseActivity(), ViewPropertyAnimatorListener {
     //实现动画监听
     override fun onAnimationEnd(view: View?) {
         //进入主界面
-        startActivity<MainActivity>()
-        //销毁当前页面
-        finish()
+        startActivityAndFinish<MainActivity>()
     }
 
     override fun onAnimationCancel(view: View?) {
