@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.runOnUiThread
+import org.jetbrains.anko.toast
 
 /**ClassName: MyPlayer
  * @author 作者 : GuoJinYi
  * @version 创建时间：2020/5/12 0012 19:23
  * @Description: 用途：fragment基类
  */
-abstract class BaseFragment :Fragment(){
+abstract class BaseFragment :Fragment(),AnkoLogger{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         init()
@@ -45,5 +48,10 @@ abstract class BaseFragment :Fragment(){
     //监听
     protected fun initListener() {
 
+    }
+
+    //吐司
+    fun myToast(msg:String){
+        context?.runOnUiThread { toast(msg) }
     }
 }
