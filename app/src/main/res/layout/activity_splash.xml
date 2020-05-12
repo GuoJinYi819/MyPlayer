@@ -3,7 +3,11 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ImageView
-        android:background="#63B8FF"
+        android:id="@+id/imageView"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:src="@mipmap/ic_launcher"
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
