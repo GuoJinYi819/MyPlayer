@@ -1,5 +1,6 @@
 package com.example.myplayer.ui.fragment
 
+import android.graphics.Color
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myplayer.R
@@ -31,9 +32,20 @@ class HomeFragment:BaseFragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         recyclerView.adapter = adapter
+        //初始化刷新控件
+        refreshLayout.setColorSchemeColors(Color.RED,Color.BLACK,Color.BLUE,Color.YELLOW)
+        //上拉刷新监听
+        refreshLayout.setOnRefreshListener {
+            //获取数据
+            loadData()
+        }
     }
 
     override fun initData() {
+       loadData()
+    }
+
+    private fun loadData(){
         val path = "http://mobile.bwstudent.com/movieApi/tool/v2/banner"
         val client = OkHttpClient()
         val request = Request.Builder()
@@ -43,7 +55,14 @@ class HomeFragment:BaseFragment() {
         client.newCall(request).enqueue(object :Callback{
             override fun onFailure(call: Call, e: IOException) {
                 //获取数据出错
-                println("出错")
+                println("出错"+e.message)
+                ThreadUtil.runOnMainThread(object :Runnable{
+                    override fun run() {
+                        //隐藏刷新控件
+                        refreshLayout.isRefreshing = false
+                    }
+
+                })
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -58,6 +77,9 @@ class HomeFragment:BaseFragment() {
                 //转主线程
                 ThreadUtil.runOnMainThread(object :Runnable{
                     override fun run() {
+                        //隐藏刷新控件
+                        refreshLayout.isRefreshing = false
+                        myToast("获取数据成功")
                         //刷新列表
                         adapter.updataList(json.result)
                     }
