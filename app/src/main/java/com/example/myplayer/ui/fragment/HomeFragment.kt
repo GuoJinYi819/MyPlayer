@@ -2,7 +2,9 @@ package com.example.myplayer.ui.fragment
 
 import android.graphics.Color
 import android.view.View
+import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myplayer.R
 import com.example.myplayer.adapter.HomeAdapter
 import com.example.myplayer.base.BaseFragment
@@ -34,11 +36,37 @@ class HomeFragment:BaseFragment() {
         recyclerView.adapter = adapter
         //初始化刷新控件
         refreshLayout.setColorSchemeColors(Color.RED,Color.BLACK,Color.BLUE,Color.YELLOW)
+
         //上拉刷新监听
         refreshLayout.setOnRefreshListener {
             //获取数据
             loadData()
         }
+
+        //监听列表的滑动
+        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    //空闲状态 且滑动到最后
+                    //是否最后一条
+                    val layoutManager = recyclerView.layoutManager
+                    if(layoutManager is LinearLayoutManager){
+                        //转换类型
+                        val manager:LinearLayoutManager = layoutManager
+                        val lastPosition = manager.findLastVisibleItemPosition()
+                        if(lastPosition==adapter.itemCount-1){
+                            //开始加重数据
+                            loadMore()
+
+                        }
+                    }
+
+                }
+
+            }
+
+        })
+
     }
 
     override fun initData() {
@@ -82,6 +110,53 @@ class HomeFragment:BaseFragment() {
                         myToast("获取数据成功")
                         //刷新列表
                         adapter.updataList(json.result)
+                    }
+
+                })
+            }
+
+        })
+    }
+
+
+    //加载更多数据
+    private fun loadMore(){
+        val path = "http://mobile.bwstudent.com/movieApi/tool/v2/banner"
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(path)
+            .get()
+            .build()
+        client.newCall(request).enqueue(object :Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                //获取数据出错
+                println("出错"+e.message)
+                ThreadUtil.runOnMainThread(object :Runnable{
+                    override fun run() {
+                        //隐藏刷新控件
+                        refreshLayout.isRefreshing = false
+                    }
+
+                })
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                //获取数据成功
+                val body = response.body
+                //获取数据
+                val result = body?.string()
+                //解析
+                val gson = Gson()
+                var json = gson.fromJson<HomeBean>(result,object :TypeToken<HomeBean>(){}.type)
+
+                //转主线程
+                ThreadUtil.runOnMainThread(object :Runnable{
+                    override fun run() {
+                        //隐藏刷新控件
+                        refreshLayout.isRefreshing = false
+                        myToast("获取数据成功")
+                        //刷新列表
+                        adapter.loadMore(json.result)
                     }
 
                 })
