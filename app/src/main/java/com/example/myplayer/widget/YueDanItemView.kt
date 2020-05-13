@@ -7,6 +7,7 @@ import android.widget.RelativeLayout
 import com.example.myplayer.R
 import com.example.myplayer.bean.YueDanBean
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.android.synthetic.main.item_home.view.*
 import kotlinx.android.synthetic.main.item_yuedan.view.*
 
@@ -33,8 +34,8 @@ class YueDanItemView:RelativeLayout {
         author_name.setText("呦呵和")
         //歌曲个数
         count.setText("1")
-        //图片
-        Picasso.with(context).load(data.imageUrl).into(author_image)
+        //图片  加载圆形
+        Picasso.with(context).load(data.imageUrl).transform(CropCircleTransformation()).into(author_image)
     }
 
 }

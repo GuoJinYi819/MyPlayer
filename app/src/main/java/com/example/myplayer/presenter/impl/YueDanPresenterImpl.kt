@@ -17,6 +17,11 @@ class YueDanPresenterImpl(var yueDanView:YueDanView):YueDanPresenter, ResponseHa
             "http://mobile.bwstudent.com/movieApi/tool/v2/banner",this).execute()
     }
 
+    override fun loadMore(i: Int) {
+        YueDanRequest(YueDanPresenter.TYPE_LOAD_MORE,
+            "http://mobile.bwstudent.com/movieApi/tool/v2/banner",this).execute()
+    }
+
     override fun onError(type: Int, msg: String?) {
         yueDanView.onError(msg)
     }
@@ -24,6 +29,8 @@ class YueDanPresenterImpl(var yueDanView:YueDanView):YueDanPresenter, ResponseHa
     override fun onSuccess(type: Int, result: YueDanBean?) {
         if(type == YueDanPresenter.TYPE_INIT_OR_REFRESH){
             yueDanView.loadSuccess(result)
+        }else{
+            yueDanView.loadMore(result)
         }
     }
 

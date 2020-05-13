@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myplayer.bean.YueDanBean
+import com.example.myplayer.widget.LoadMoreView
 import com.example.myplayer.widget.YueDanItemView
 
 /**ClassName: MyPlayer
@@ -22,18 +23,41 @@ class YueDanAdapter: RecyclerView.Adapter<YueDanAdapter.YueDanHolder>() {
             this.list.addAll(list)
             notifyDataSetChanged()
         }
+    }
 
+    fun loadMore(list: List<YueDanBean.ResultBean>){
+        this.list.addAll(list)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): YueDanHolder {
-        return YueDanHolder(YueDanItemView(parent?.context))
+       if(viewType==1){
+           return YueDanHolder(LoadMoreView(parent?.context))
+
+       }else{
+           //普通控件
+           return YueDanHolder(YueDanItemView(parent?.context))
+       }
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return list.size+1
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if(position == list.size){
+            return 1
+        }else{
+            //普通控件
+            return 0
+        }
     }
 
     override fun onBindViewHolder(holder: YueDanHolder, position: Int) {
+        //加载更多条目 不做处理
+       if(position == list.size){
+           return
+       }
         //data
         val data = list.get(position)
         val itemView = holder.itemView as YueDanItemView
