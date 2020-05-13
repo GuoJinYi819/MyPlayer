@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myplayer.R
 import com.example.myplayer.adapter.HomeAdapter
 import com.example.myplayer.base.BaseFragment
+import com.example.myplayer.bean.HomeBean
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_home.*
 import okhttp3.*
 import java.io.IOException
@@ -48,7 +51,10 @@ class HomeFragment:BaseFragment() {
                 val body = response.body
                 //获取数据
                 val result = body?.string()
-                println(result)
+                //解析
+                val gson = Gson()
+                var json = gson.fromJson<HomeBean>(result,object :TypeToken<HomeBean>(){}.type)
+                println(json.message)
             }
 
         })
