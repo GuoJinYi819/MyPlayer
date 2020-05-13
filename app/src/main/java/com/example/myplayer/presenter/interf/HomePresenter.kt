@@ -13,4 +13,5 @@ interface HomePresenter {
     fun loadMore(i: Int) {
 
     }
+
 }
