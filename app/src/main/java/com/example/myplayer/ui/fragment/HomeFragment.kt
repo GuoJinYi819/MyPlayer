@@ -10,6 +10,7 @@ import com.example.myplayer.R
 import com.example.myplayer.adapter.HomeAdapter
 import com.example.myplayer.base.BaseFragment
 import com.example.myplayer.bean.HomeBean
+import com.example.myplayer.util.ThreadUtil
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -22,6 +23,9 @@ import java.io.IOException
  * @Description: 用途：完成特定功能
  */
 class HomeFragment:BaseFragment() {
+    //惰性加载
+    val adapter by lazy { HomeAdapter() }
+
     override fun initView(): View? {
         return View.inflate(context, R.layout.fragment_home,null)
     }
@@ -29,7 +33,7 @@ class HomeFragment:BaseFragment() {
     override fun initListener() {
         //布局管理器
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = HomeAdapter()
+
         recyclerView.adapter = adapter
     }
 
@@ -54,8 +58,14 @@ class HomeFragment:BaseFragment() {
                 //解析
                 val gson = Gson()
                 var json = gson.fromJson<HomeBean>(result,object :TypeToken<HomeBean>(){}.type)
-                val result1 = json.result
-                println(result1.get(0).imageUrl)
+                //刷新列表
+                //转主线程
+                ThreadUtil.runOnMainThread(object :Runnable{
+                    override fun run() {
+
+                    }
+
+                })
             }
 
         })
