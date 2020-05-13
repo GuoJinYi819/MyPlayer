@@ -3,8 +3,15 @@ package com.example.myplayer.ui.fragment
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myplayer.R
+import com.example.myplayer.adapter.HomeAdapter
 import com.example.myplayer.base.BaseFragment
+import kotlinx.android.synthetic.main.fragment_home.*
+import okhttp3.*
+import java.io.IOException
 
 /**ClassName: MyPlayer
  * @author 作者 : GuoJinYi
@@ -13,11 +20,37 @@ import com.example.myplayer.base.BaseFragment
  */
 class HomeFragment:BaseFragment() {
     override fun initView(): View? {
-        val tv= TextView(context)
-        tv.gravity = Gravity.CENTER
-        tv.setTextColor(Color.RED)
-        tv.text = javaClass.simpleName
-        return tv
+        return View.inflate(context, R.layout.fragment_home,null)
+    }
 
+    override fun initListener() {
+        //布局管理器
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        val adapter = HomeAdapter()
+        recyclerView.adapter = adapter
+    }
+
+    override fun initData() {
+        val path = "http://mobile.bwstudent.com/movieApi/tool/v2/banner"
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(path)
+            .get()
+            .build()
+        client.newCall(request).enqueue(object :Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                //获取数据出错
+                println("出错")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                //获取数据成功
+                val body = response.body
+                //获取数据
+                val result = body?.string()
+                println(result)
+            }
+
+        })
     }
 }

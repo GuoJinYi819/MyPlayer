@@ -42,11 +42,11 @@ abstract class BaseFragment :Fragment(),AnkoLogger{
     }
 
     //数据操作
-    protected fun initData() {
+   open protected fun initData() {
 
     }
     //监听
-    protected fun initListener() {
+   open protected fun initListener() {
 
     }
 
