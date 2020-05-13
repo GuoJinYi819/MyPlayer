@@ -15,20 +15,29 @@ import com.example.myplayer.widget.LoadMoreView
 class HomeAdapter: RecyclerView.Adapter<HomeAdapter.HomeHolder>() {
     //定义集合
     private var list = ArrayList<HomeBean.ResultBean>()
-    fun updataList(list: List<HomeBean.ResultBean>){
-        //保证list为空
-        this.list.clear()
-        //添加list
-        this.list.addAll(list)
-        //刷新适配器
-        notifyDataSetChanged()
+    fun updataList(list: List<HomeBean.ResultBean>?){
+        //let表达式 相当于 对lift判空
+        list?.let {
+            //保证list为空
+            this.list.clear()
+            //添加list
+            this.list.addAll(list)
+            //刷新适配器
+            notifyDataSetChanged()
+
+        }
+
 
     }
 
     //加载更多   不需要清空之前集合
-    fun loadMore(list:List<HomeBean.ResultBean>){
-        this.list.addAll(list)
-        notifyDataSetChanged()
+    fun loadMore(list:List<HomeBean.ResultBean>?){
+        //相当于 对lift判空
+        list?.let {
+            this.list.addAll(list)
+            notifyDataSetChanged()
+        }
+
     }
 
     override fun getItemCount(): Int {

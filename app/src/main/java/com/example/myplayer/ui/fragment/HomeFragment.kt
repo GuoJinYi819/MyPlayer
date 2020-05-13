@@ -9,7 +9,9 @@ import com.example.myplayer.R
 import com.example.myplayer.adapter.HomeAdapter
 import com.example.myplayer.base.BaseFragment
 import com.example.myplayer.bean.HomeBean
+import com.example.myplayer.presenter.impl.HomePresenterImpl
 import com.example.myplayer.util.ThreadUtil
+import com.example.myplayer.view.HomeView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -21,9 +23,27 @@ import java.io.IOException
  * @version 创建时间：2020/5/13 0013 8:43
  * @Description: 用途：完成特定功能
  */
-class HomeFragment:BaseFragment() {
+class HomeFragment:BaseFragment(), HomeView {
+    //接口回调
+    override fun onError(message: String?) {
+        myToast("加载数据失败")
+    }
+
+    override fun loadSuccess(json: HomeBean?) {
+        //隐藏刷新控件
+        refreshLayout.isRefreshing = false
+        //刷新列表
+        adapter.updataList(json?.result)
+    }
+
+    override fun loadMore(json: HomeBean?) {
+        adapter.loadMore(json?.result)
+    }
+
     //惰性加载
     val adapter by lazy { HomeAdapter() }
+
+    val presenter by lazy { HomePresenterImpl(this) }
 
     override fun initView(): View? {
         return View.inflate(context, R.layout.fragment_home,null)
@@ -40,7 +60,7 @@ class HomeFragment:BaseFragment() {
         //上拉刷新监听
         refreshLayout.setOnRefreshListener {
             //获取数据
-            loadData()
+            presenter.loadDatas()
         }
 
         //监听列表的滑动
@@ -56,7 +76,7 @@ class HomeFragment:BaseFragment() {
                         val lastPosition = manager.findLastVisibleItemPosition()
                         if(lastPosition==adapter.itemCount-1){
                             //开始加重数据
-                            loadMore()
+                            presenter.loadMore(1)
 
                         }
                     }
@@ -70,98 +90,8 @@ class HomeFragment:BaseFragment() {
     }
 
     override fun initData() {
-       loadData()
-    }
-
-    private fun loadData(){
-        val path = "http://mobile.bwstudent.com/movieApi/tool/v2/banner"
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url(path)
-            .get()
-            .build()
-        client.newCall(request).enqueue(object :Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                //获取数据出错
-                println("出错"+e.message)
-                ThreadUtil.runOnMainThread(object :Runnable{
-                    override fun run() {
-                        //隐藏刷新控件
-                        refreshLayout.isRefreshing = false
-                    }
-
-                })
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                //获取数据成功
-                val body = response.body
-                //获取数据
-                val result = body?.string()
-                //解析
-                val gson = Gson()
-                var json = gson.fromJson<HomeBean>(result,object :TypeToken<HomeBean>(){}.type)
-
-                //转主线程
-                ThreadUtil.runOnMainThread(object :Runnable{
-                    override fun run() {
-                        //隐藏刷新控件
-                        refreshLayout.isRefreshing = false
-                        myToast("获取数据成功")
-                        //刷新列表
-                        adapter.updataList(json.result)
-                    }
-
-                })
-            }
-
-        })
+        presenter.loadDatas()
     }
 
 
-    //加载更多数据
-    private fun loadMore(){
-        val path = "http://mobile.bwstudent.com/movieApi/tool/v2/banner"
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url(path)
-            .get()
-            .build()
-        client.newCall(request).enqueue(object :Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                //获取数据出错
-                println("出错"+e.message)
-                ThreadUtil.runOnMainThread(object :Runnable{
-                    override fun run() {
-                        //隐藏刷新控件
-                        refreshLayout.isRefreshing = false
-                    }
-
-                })
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                //获取数据成功
-                val body = response.body
-                //获取数据
-                val result = body?.string()
-                //解析
-                val gson = Gson()
-                var json = gson.fromJson<HomeBean>(result,object :TypeToken<HomeBean>(){}.type)
-
-                //转主线程
-                ThreadUtil.runOnMainThread(object :Runnable{
-                    override fun run() {
-                        //隐藏刷新控件
-                        refreshLayout.isRefreshing = false
-                        myToast("获取数据成功")
-                        //刷新列表
-                        adapter.loadMore(json.result)
-                    }
-
-                })
-            }
-
-        })
-    }
 }
