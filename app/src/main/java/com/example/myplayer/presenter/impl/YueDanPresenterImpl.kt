@@ -13,7 +13,8 @@ import com.example.myplayer.view.YueDanView
  */
 class YueDanPresenterImpl(var yueDanView:YueDanView):YueDanPresenter, ResponseHandler<YueDanBean> {
     override fun loadDatas() {
-        YueDanRequest(YueDanPresenter.TYPE_INIT_OR_REFRESH,"http://mobile.bwstudent.com/movieApi/tool/v2/banner",this)
+        YueDanRequest(YueDanPresenter.TYPE_INIT_OR_REFRESH,
+            "http://mobile.bwstudent.com/movieApi/tool/v2/banner",this).execute()
     }
 
     override fun onError(type: Int, msg: String?) {

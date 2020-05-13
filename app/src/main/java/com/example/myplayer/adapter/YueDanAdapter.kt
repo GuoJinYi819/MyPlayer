@@ -3,6 +3,7 @@ package com.example.myplayer.adapter
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myplayer.bean.YueDanBean
 import com.example.myplayer.widget.YueDanItemView
 
 /**ClassName: MyPlayer
@@ -11,12 +12,25 @@ import com.example.myplayer.widget.YueDanItemView
  * @Description: 用途：悦单界面
  */
 class YueDanAdapter: RecyclerView.Adapter<YueDanAdapter.YueDanHolder>() {
+    //接收数据
+    private var list = ArrayList<YueDanBean.ResultBean>()
+
+    //初始化集合
+    fun updateList(list:List<YueDanBean.ResultBean>){
+        list?.let {
+            this.list.clear()
+            this.list.addAll(list)
+            notifyDataSetChanged()
+        }
+
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): YueDanHolder {
         return YueDanHolder(YueDanItemView(parent?.context))
     }
 
     override fun getItemCount(): Int {
-        return 20
+        return list.size
     }
 
     override fun onBindViewHolder(holder: YueDanHolder, position: Int) {

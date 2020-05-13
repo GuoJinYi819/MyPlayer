@@ -37,6 +37,7 @@ class YunDanFragment:BaseFragment(), YueDanView {
     override fun initData() {
         //加载数据
         presenter.loadDatas()
+        println("加载数据")
     }
 
     override fun onError(message: String?) {
@@ -45,6 +46,8 @@ class YunDanFragment:BaseFragment(), YueDanView {
 
     override fun loadSuccess(json: YueDanBean?) {
         //刷新适配器
+        adapter.updateList(json!!.result)
+        println("成功")
 
     }
 
