@@ -5,11 +5,11 @@ package com.example.myplayer.net
  * @version 创建时间：2020/5/13 0013 14:12
  * @Description: 用途：请求回调
  */
-open class ResponseHandler<RESPONSE> {
-    open fun onError(msg:String?){
+interface ResponseHandler<RESPONSE> {
+     open fun onError(type:Int,msg:String?){
 
     }
-    open fun onSuccess(result:RESPONSE) {
+    open fun onSuccess(type:Int,result:RESPONSE?) {
 
     }
 }

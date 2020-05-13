@@ -32,7 +32,7 @@ class NetManager private constructor(){
                 ThreadUtil.runOnMainThread(object :Runnable{
                     override fun run() {
                         //回调到 view层处理
-                        req.handler.onError(e?.message)
+                        req.handler.onError(req.type,e?.message)
                     }
 
                 })
@@ -49,7 +49,7 @@ class NetManager private constructor(){
                 ThreadUtil.runOnMainThread(object :Runnable{
                     override fun run() {
                         //回调到view层
-                        req.handler.onSuccess(parseResult)
+                        req.handler.onSuccess(req.type,parseResult)
                     }
 
                 })

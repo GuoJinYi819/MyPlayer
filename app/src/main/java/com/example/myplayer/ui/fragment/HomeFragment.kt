@@ -24,22 +24,6 @@ import java.io.IOException
  * @Description: 用途：完成特定功能
  */
 class HomeFragment:BaseFragment(), HomeView {
-    //接口回调
-    override fun onError(message: String?) {
-        myToast("加载数据失败")
-    }
-
-    override fun loadSuccess(json: HomeBean?) {
-        //隐藏刷新控件
-        refreshLayout.isRefreshing = false
-        //刷新列表
-        adapter.updataList(json?.result)
-    }
-
-    override fun loadMore(json: HomeBean?) {
-        adapter.loadMore(json?.result)
-    }
-
     //惰性加载
     val adapter by lazy { HomeAdapter() }
 
@@ -93,5 +77,19 @@ class HomeFragment:BaseFragment(), HomeView {
         presenter.loadDatas()
     }
 
+    //接口回调
+    override fun onError(message: String?) {
+        myToast("加载数据失败")
+    }
 
+    override fun loadSuccess(json: HomeBean?) {
+        //隐藏刷新控件
+        refreshLayout.isRefreshing = false
+        //刷新列表
+        adapter.updataList(json?.result)
+    }
+
+    override fun loadMore(json: HomeBean?) {
+        adapter.loadMore(json?.result)
+    }
 }

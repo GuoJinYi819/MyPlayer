@@ -6,6 +6,10 @@ package com.example.myplayer.presenter.interf
  * @Description: 用途：完成特定功能
  */
 interface HomePresenter {
+    companion object{
+        val TYPE_INIT_OR_REFRESH = 1
+        val TYPE_LOAD_MORE = 2
+    }
     fun loadDatas() {
 
     }

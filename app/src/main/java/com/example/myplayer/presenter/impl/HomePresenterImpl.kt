@@ -17,38 +17,35 @@ import java.io.IOException
  * @version 创建时间：2020/5/13 0013 13:45
  * @Description: 用途：完成特定功能
  */
-class HomePresenterImpl(var homeView:HomeView):HomePresenter {
+class HomePresenterImpl(var homeView:HomeView?):HomePresenter, ResponseHandler<HomeBean> {
+
+    fun destoryView(){
+        if(homeView!=null){
+            homeView = null
+        }
+    }
 
     //初始化数据/刷新
     override fun loadDatas() {
         //1 定义 request
-        val request = HomeRequest(object :ResponseHandler<HomeBean>(){
-            override fun onError(msg: String?) {
-                homeView.onError(msg)
-            }
-
-            override fun onSuccess(result: HomeBean) {
-                homeView.loadSuccess(result)
-            }
-        })
-        //2 发送 request
-        NetManager.manager.sendRequest(request)
+        HomeRequest(HomePresenter.TYPE_INIT_OR_REFRESH,this).execute()
     }
 
     override fun loadMore(i: Int) {
         //1 定义 request
-        val request = HomeRequest(object :ResponseHandler<HomeBean>(){
-            override fun onError(msg: String?) {
-                homeView.onError(msg)
-            }
-
-            override fun onSuccess(result: HomeBean) {
-                homeView.loadMore(result)
-            }
-        })
-        //2 发送 request
-        NetManager.manager.sendRequest(request)
+        HomeRequest(HomePresenter.TYPE_LOAD_MORE,this).execute()
     }
 
+    override fun onError(type:Int,msg: String?) {
+       homeView?.onError(msg)
+    }
 
+    override fun onSuccess(type:Int,result: HomeBean?) {
+        //区分  初始化数据-加载数据
+        when(type){
+            HomePresenter.TYPE_INIT_OR_REFRESH->homeView?.loadSuccess(result)
+            HomePresenter.TYPE_LOAD_MORE->homeView?.loadMore(result)
+        }
+
+    }
 }

@@ -10,7 +10,8 @@ import java.lang.reflect.ParameterizedType
  * @version 创建时间：2020/5/13 0013 14:12
  * @Description: 用途：所有请求基类
  */
-open class MRequest<RESPONSE>(val url:String,val handler:ResponseHandler<RESPONSE>) {
+open class MRequest<RESPONSE>(val type:Int,val url:String,val handler:ResponseHandler<RESPONSE>) {
+
     fun parseResult(result: String?): RESPONSE {
         //解析
         val gson = Gson()
@@ -21,5 +22,8 @@ open class MRequest<RESPONSE>(val url:String,val handler:ResponseHandler<RESPONS
         return json
     }
 
-
+    //发送网络请求
+    fun execute(){
+        NetManager.manager.sendRequest(this)
+    }
 }
