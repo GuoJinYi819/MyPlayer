@@ -1,10 +1,6 @@
 package com.example.myplayer.ui.fragment
 
-import android.graphics.Color
-import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myplayer.R
 import com.example.myplayer.adapter.HomeAdapter
@@ -58,11 +54,12 @@ class HomeFragment:BaseFragment() {
                 //解析
                 val gson = Gson()
                 var json = gson.fromJson<HomeBean>(result,object :TypeToken<HomeBean>(){}.type)
-                //刷新列表
+
                 //转主线程
                 ThreadUtil.runOnMainThread(object :Runnable{
                     override fun run() {
-
+                        //刷新列表
+                        adapter.updataList(json.result)
                     }
 
                 })
