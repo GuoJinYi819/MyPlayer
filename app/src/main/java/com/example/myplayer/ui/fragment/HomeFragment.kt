@@ -54,7 +54,8 @@ class HomeFragment:BaseFragment() {
                 //解析
                 val gson = Gson()
                 var json = gson.fromJson<HomeBean>(result,object :TypeToken<HomeBean>(){}.type)
-                println(json.message)
+                val result1 = json.result
+                println(result1.get(0).imageUrl)
             }
 
         })
