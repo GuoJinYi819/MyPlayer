@@ -4,9 +4,8 @@ import android.graphics.Color
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myplayer.R
-import com.example.myplayer.adapter.mvAdapter
+import com.example.myplayer.adapter.MvAdapter
 import com.example.myplayer.base.BaseFragment
-import com.example.myplayer.bean.MvBean
 import com.example.myplayer.bean.MvPagerBean
 import com.example.myplayer.presenter.impl.MVPresenterImpl
 import com.example.myplayer.view.MVView
@@ -34,7 +33,7 @@ class MyPagerFragment:BaseFragment(), MVView {
     //惰性创建presenter
     val presenter by lazy { MVPresenterImpl(this) }
 
-    val adapter by lazy { mvAdapter() }
+    val adapter by lazy { MvAdapter(context!!) }
 
     override fun initView(): View? {
         return View.inflate(context,R.layout.fargment_mypager,null)

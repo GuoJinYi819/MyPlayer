@@ -1,11 +1,12 @@
 package com.example.myplayer.adapter
 
+import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myplayer.bean.HomeBean
 import com.example.myplayer.bean.MvPagerBean
-import com.example.myplayer.widget.HomeItemView
+import com.example.myplayer.ui.activity.VideoPlayerActivity
 import com.example.myplayer.widget.LoadMoreView
 import com.example.myplayer.widget.MvItemView
 
@@ -14,9 +15,11 @@ import com.example.myplayer.widget.MvItemView
  * @version 创建时间：2020/5/13 0013 9:24
  * @Description: 用途：完成特定功能
  */
-class mvAdapter: RecyclerView.Adapter<mvAdapter.MvHolder>() {
+class MvAdapter(var context: Context): RecyclerView.Adapter<MvAdapter.MvHolder>() {
     //定义集合
     private var list = ArrayList<MvPagerBean.ResultBean>()
+
+
     fun updataList(list: List<MvPagerBean.ResultBean>?){
         //let表达式 相当于 对lift判空
         list?.let {
@@ -55,6 +58,7 @@ class mvAdapter: RecyclerView.Adapter<mvAdapter.MvHolder>() {
         }
     }
 
+
     override fun onBindViewHolder(holder: MvHolder, position: Int) {
         //如果是 最后一条就不需要设置参数了
         if(position==list.size){
@@ -67,6 +71,11 @@ class mvAdapter: RecyclerView.Adapter<mvAdapter.MvHolder>() {
 
         //条目刷新
         itemView.setData(data)
+
+        //点击事件
+        itemView.setOnClickListener{
+            context.startActivity(Intent(context,VideoPlayerActivity::class.java))
+        }
 
     }
 
@@ -82,5 +91,9 @@ class mvAdapter: RecyclerView.Adapter<mvAdapter.MvHolder>() {
 
     class MvHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
+    }
+
+    interface OnClikListener{
+        fun onClick()
     }
 }
