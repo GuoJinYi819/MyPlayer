@@ -8,6 +8,7 @@ import com.example.myplayer.R
 import com.example.myplayer.adapter.MvPagerAdapter
 import com.example.myplayer.base.BaseFragment
 import com.example.myplayer.bean.MvBean
+import com.example.myplayer.bean.MvPagerBean
 import com.example.myplayer.presenter.impl.MVPresenterImpl
 import com.example.myplayer.view.MVView
 import kotlinx.android.synthetic.main.fragment_mv.*
@@ -18,9 +19,8 @@ import kotlinx.android.synthetic.main.fragment_mv.*
  * @Description: 用途：完成特定功能
  */
 class MVFragment:BaseFragment(),MVView{
-    override fun onSuccess(result: MvBean?) {
-        //成功了
-    }
+
+
 
     override fun onError(msg: String?) {
         //失败了
@@ -39,7 +39,6 @@ class MVFragment:BaseFragment(),MVView{
 
     override fun initData() {
         //加载区域数据
-        presenter.loadData()
         var list = ArrayList<MvBean>()
         list.add(MvBean("嘿嘿"))
         list.add(MvBean("呼呼"))

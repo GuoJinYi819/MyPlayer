@@ -6,5 +6,15 @@ package com.example.myplayer.presenter.interf
  * @Description: 用途：完成特定功能
  */
 interface MVPresenter {
-    fun loadData()
+    companion object{
+        val TYPE_INIT_OR_REFRESH = 1
+        val TYPE_LOAD_MORE = 2
+    }
+    fun loadData() {
+
+    }
+
+    fun loadMore(i: Int) {
+
+    }
 }

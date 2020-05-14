@@ -1,5 +1,7 @@
 package com.example.myplayer.net
 
+import com.example.myplayer.bean.HomeBean
+
 /**ClassName: MyPlayer
  * @author 作者 : GuoJinYi
  * @version 创建时间：2020/5/13 0013 14:12
