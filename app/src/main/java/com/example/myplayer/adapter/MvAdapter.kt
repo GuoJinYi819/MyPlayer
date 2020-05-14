@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myplayer.bean.MvPagerBean
+import com.example.myplayer.ui.activity.JieCaoVideoPlayerActivity
 import com.example.myplayer.ui.activity.TextTureVideoPlayerActivity
 import com.example.myplayer.ui.activity.VideoPlayerActivity
 import com.example.myplayer.widget.LoadMoreView
@@ -75,7 +76,7 @@ class MvAdapter(var context: Context): RecyclerView.Adapter<MvAdapter.MvHolder>(
 
         //点击事件
         itemView.setOnClickListener{
-            context.startActivity(Intent(context, TextTureVideoPlayerActivity::class.java))
+            context.startActivity(Intent(context, JieCaoVideoPlayerActivity::class.java))
         }
 
     }
