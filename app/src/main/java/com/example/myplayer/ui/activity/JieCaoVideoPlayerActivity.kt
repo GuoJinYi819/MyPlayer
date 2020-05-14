@@ -1,11 +1,10 @@
 package com.example.myplayer.ui.activity
 
+import android.view.ViewParent
+import androidx.viewpager.widget.ViewPager
 import com.example.myplayer.base.BaseActivity
-import kotlinx.android.synthetic.main.activity_video_player.*
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import com.example.myplayer.R
+import com.example.myplayer.adapter.VideoPagerAdapter
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard
 import kotlinx.android.synthetic.main.activity_video_player_jiecao.*
@@ -22,6 +21,35 @@ class JieCaoVideoPlayerActivity :BaseActivity(){
     }
 
     override fun initListener() {
+        //适配viewPager
+        viewPager.adapter = VideoPagerAdapter(supportFragmentManager)
+        //radiogroup 监听
+        rg.setOnCheckedChangeListener { group, checkedId ->
+            when(checkedId){
+                R.id.rb1->viewPager.setCurrentItem(0)
+                R.id.rb2->viewPager.setCurrentItem(1)
+                R.id.rb3->viewPager.setCurrentItem(2)
+            }
+
+        }
+        viewPager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
+            //滑动状态改变
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+            //滑动
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+            //选中状态改变
+            override fun onPageSelected(position: Int) {
+                when(position){
+                    0->rg.check(R.id.rb1)
+                    1->rg.check(R.id.rb2)
+                    2->rg.check(R.id.rb3)
+                }
+            }
+        })
 
     }
 
@@ -52,5 +80,6 @@ class JieCaoVideoPlayerActivity :BaseActivity(){
         //清除资源
         JCVideoPlayer.releaseAllVideos()
     }
+
 
 }
