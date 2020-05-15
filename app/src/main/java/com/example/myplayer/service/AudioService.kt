@@ -20,10 +20,14 @@ class AudioService :Service(){
 
     var mediaPlayer:MediaPlayer? = null
 
-    val MODE_ALL = 1
-    val MODE_SINGLE = 2
-    val MODE_RANDOM = 3
-    val mode = MODE_ALL //当前播放模式
+
+    companion object{
+        val MODE_ALL = 1
+        val MODE_SINGLE = 2
+        val MODE_RANDOM = 3
+    }
+
+    var mode = MODE_ALL //当前播放模式
 
     val binder by lazy { AudioBinder() }
     override fun onCreate() {
@@ -46,6 +50,50 @@ class AudioService :Service(){
 
     inner class AudioBinder:Binder(),IService, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener {
+        //上一曲
+        override fun playPre() {
+            list?.let {
+                //获取要播放歌曲 position
+                when(mode){
+                    MODE_RANDOM ->position = Random.nextInt(it.size-2)
+                    else->{
+                        if(position==0){
+                            position = it.size-1
+                        }else{
+                            position--
+                        }
+                    }
+                }
+            }
+            playItme()
+        }
+        //下一曲
+        override fun playNext() {
+            list?.let {
+                when(mode){
+                    MODE_RANDOM->position = Random.nextInt(it.size-1)
+                    else->{
+                        position = (position+1)%it.size
+                    }
+                }
+            }
+            playItme()
+        }
+
+        //获取播放模式
+        override fun getPlayMode(): Int {
+            return mode
+        }
+
+        //修改播放模式
+        override fun updatePlayMode() {
+           when(mode){
+               MODE_ALL -> mode = MODE_SINGLE
+               MODE_SINGLE -> mode = MODE_RANDOM
+               MODE_RANDOM -> mode = MODE_ALL
+           }
+        }
+
         //歌曲播放完成之后回调
         override fun onCompletion(mp: MediaPlayer?) {
             //自动播放下一首

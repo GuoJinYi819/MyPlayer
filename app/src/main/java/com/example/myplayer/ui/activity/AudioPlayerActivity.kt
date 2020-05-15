@@ -119,6 +119,42 @@ class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
             }
 
         })
+        //播放模式
+        mode.setOnClickListener{
+            updataPlayerMode()
+        }
+        //上一曲 下一曲
+        pre.setOnClickListener {
+            iService?.playPre()
+        }
+        next.setOnClickListener {
+            iService?.playNext()
+        }
+    }
+
+    //更新播放模式
+    private fun updataPlayerMode() {
+        //修改 service 中的模式
+        iService?.updatePlayMode()
+        //修改 界面模式图标
+
+        updatePlayModeBtn()
+    }
+
+    //根据播放模式 修改播放模式图标
+    private fun updatePlayModeBtn() {
+        //获取播放模式
+       iService?.let {
+           val mode1:Int = it.getPlayMode()
+           //设置图标
+           when(mode1){
+               AudioService.MODE_ALL->mode.text = "顺序播放"
+               AudioService.MODE_SINGLE->mode.text = "单曲循环"
+               AudioService.MODE_RANDOM->mode.text = "随机播放"
+           }
+       }
+
+
     }
 
     //接收 EventBus信息
@@ -135,6 +171,8 @@ class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
         progress_sk.max = duration
         //更新播放进度
         startUpdateProgress()
+        //更新播放模式图标
+        updatePlayModeBtn()
     }
 
     //开始更新进度
