@@ -2,6 +2,7 @@ package com.example.myplayer.ui.fragment
 
 import android.content.AsyncQueryHandler
 import android.content.ContentResolver
+import android.content.Intent
 import android.database.Cursor
 import android.graphics.Color
 import android.os.AsyncTask
@@ -14,6 +15,8 @@ import android.widget.TextView
 import com.example.myplayer.R
 import com.example.myplayer.adapter.VbangAdapter
 import com.example.myplayer.base.BaseFragment
+import com.example.myplayer.bean.AudioBean
+import com.example.myplayer.ui.activity.AudioPlayerActivity
 import com.example.myplayer.util.CursorUtil
 import kotlinx.android.synthetic.main.fragment_vbang.*
 
@@ -40,6 +43,17 @@ class VBangFragment:BaseFragment() {
 
         adapter = VbangAdapter(context,null)
         listView.adapter = adapter
+        
+        //条目点击事件
+        listView.setOnItemClickListener { parent, view, position, id ->
+            //获取数据集合
+            val cursor = adapter?.getItem(position) as Cursor
+            //通过当前位置cursor获取整个播放列表
+            val list:ArrayList<AudioBean> = AudioBean.getAudioBeans(cursor)
+
+            //跳转到音乐播放界面
+           startActivity(Intent(context,AudioPlayerActivity::class.java).putExtra("list",list).putExtra("position",position))
+        }
     }
 
     override fun initData() {
