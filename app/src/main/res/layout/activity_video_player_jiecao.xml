@@ -7,5 +7,49 @@
         android:id="@+id/jzvideo"
         android:layout_width="match_parent"
         android:layout_height="200dp" />
+    
+    <RadioGroup
+        android:id="@+id/rg"
+        android:layout_margin="20dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/rb1"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:text="MV"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:layout_height="50dp">
+
+        </RadioButton>
+        <RadioButton
+            android:id="@+id/rb2"
+            android:layout_width="0dp"
+            android:text="评论"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@color/colorPrimary"
+            android:layout_height="50dp">
+
+        </RadioButton>
+        <RadioButton
+            android:id="@+id/rb3"
+            android:layout_width="0dp"
+            android:text="MV相关"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@color/colorAccent"
+            android:layout_height="50dp">
+
+        </RadioButton>
+    </RadioGroup>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </androidx.viewpager.widget.ViewPager>
 
 </LinearLayout>
