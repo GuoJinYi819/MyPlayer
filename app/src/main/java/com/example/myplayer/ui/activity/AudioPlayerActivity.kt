@@ -86,6 +86,7 @@ class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
     }
 
     override fun initListener() {
+
         //设置动画
         animation = AnimationUtils.loadAnimation(this,R.anim.img_action)
         val lin = LinearInterpolator()
@@ -207,11 +208,11 @@ class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
         val intent = Intent(this,AudioService::class.java)
         intent.putExtra("list",list)
         intent.putExtra("position",position)
-        //先开启
-        startService(intent)
+
         //再绑定
         bindService(intent,audioConnection,Context.BIND_AUTO_CREATE)
-
+        //先开启
+        startService(intent)
 
 //        //播放音乐
 //        val mediaPlayer = MediaPlayer()

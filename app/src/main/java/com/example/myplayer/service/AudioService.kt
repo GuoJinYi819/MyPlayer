@@ -16,7 +16,7 @@ import kotlin.random.Random
  */
 class AudioService :Service(){
     var list:ArrayList<AudioBean>? = null
-    var position:Int = 0
+    var position:Int = -2  //正在播放的 position
 
     var mediaPlayer:MediaPlayer? = null
 
@@ -37,9 +37,17 @@ class AudioService :Service(){
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         //获取集合
         list = intent?.getParcelableArrayListExtra<AudioBean>("list")
-        position = intent?.getIntExtra("position", -1)?:-1
-        //开始播放
-        binder.playItme()
+        val pos = intent?.getIntExtra("position", -1)?:-1  //想要播放position
+        if(pos!=position){
+            //开始播放
+            position = pos
+            binder.playItme()
+
+        }else{
+            //通知更新ui
+            binder.notifyUpdataUi()
+
+        }
         return START_NOT_STICKY
     }
 
@@ -154,12 +162,19 @@ class AudioService :Service(){
             notifyUpdataUi()
         }
 
-        private fun notifyUpdataUi() {
+        public fun notifyUpdataUi() {
             //通知界面更新
             EventBus.getDefault().post(list?.get(position))
         }
 
         fun playItme(){
+            //判断 mediaPlayer已经存在 就释放掉
+            if (mediaPlayer != null) {
+                //释放 mediaPlayer资源
+                mediaPlayer?.reset()
+                mediaPlayer?.release()
+                mediaPlayer = null
+            }
             mediaPlayer = MediaPlayer()
             //播放音乐
             mediaPlayer?.let {
