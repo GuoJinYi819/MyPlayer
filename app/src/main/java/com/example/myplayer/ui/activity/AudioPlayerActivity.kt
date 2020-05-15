@@ -1,12 +1,16 @@
 package com.example.myplayer.ui.activity
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.media.MediaPlayer
+import android.os.Handler
 import android.os.IBinder
+import android.os.Message
 import android.view.View
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import com.example.myplayer.R
@@ -14,6 +18,7 @@ import com.example.myplayer.base.BaseActivity
 import com.example.myplayer.bean.AudioBean
 import com.example.myplayer.service.AudioService
 import com.example.myplayer.service.IService
+import com.example.myplayer.util.StringUtil
 import kotlinx.android.synthetic.main.activity_audio_player.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -26,6 +31,17 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
     var audioBean:AudioBean? = null
+    var animation:Animation? = null
+    var duration:Int = 0
+    val MSG_PROGRESS:Int = 0
+    var handler = object :Handler(){
+        override fun handleMessage(msg: Message?) {
+            when(msg?.what){
+               MSG_PROGRESS->startUpdateProgress()
+            }
+        }
+    }
+
     override fun onClick(v: View?) {
         when(v?.id){
             R.id.start->updataPlayer()//更新播放状态
@@ -48,10 +64,16 @@ class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
         isPlayer?.let {
             if(isPlayer){
                 //正在播放
+                ivAction.startAnimation(animation)
                 start.text = "暂停"
+                //开始更新进度
+                handler.sendEmptyMessageDelayed(MSG_PROGRESS,1000)
             }else{
                 //没有播放
                 start.text = "播放"
+                ivAction.clearAnimation()
+                //停止更新进度
+                handler.removeMessages(MSG_PROGRESS)
             }
         }
     }
@@ -64,10 +86,12 @@ class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
 
     override fun initListener() {
         //设置动画
-        val animation = AnimationUtils.loadAnimation(this,R.anim.img_action)
+        animation = AnimationUtils.loadAnimation(this,R.anim.img_action)
         val lin = LinearInterpolator()
-        animation.setInterpolator(lin)
+        animation?.setInterpolator(lin)
         ivAction.startAnimation(animation)
+
+
         //销毁界面
         ivBlack.setOnClickListener {
             finish()
@@ -84,8 +108,34 @@ class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
         //歌曲名
         tvName.text = itemBean.display_name
 
+
+        //获取总进度
+        duration = iService?.getDuration()?:0
+        //设置进度条最大值
+        progress_sk.max = duration
+        //更新播放进度
+        startUpdateProgress()
     }
 
+    //开始更新进度
+    private fun startUpdateProgress() {
+        //获取当前进度
+        val progress:Int = iService?.getProgress()?:0
+        //更新进度数据
+        updateProgresss(progress)
+        //定时获取进度
+        handler.sendEmptyMessageDelayed(MSG_PROGRESS,1000)
+    }
+
+    //根据当前进度数据 更新界面
+    private fun updateProgresss(pro: Int) {
+        //更新进度数值
+        val dur = StringUtil.parseDuration(pro)
+        time1.text = dur+"/"+StringUtil.parseDuration(duration)
+
+        //更新进度条
+        progress_sk.setProgress(pro)
+    }
 
 
     override fun initData() {
@@ -137,6 +187,9 @@ class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
         unbindService(audioConnection)
         //反注册EventBus
         EventBus.getDefault().unregister(this)
+
+        //清空handler中 发送的所有消息
+        handler.removeCallbacksAndMessages(null)
     }
 
 }

@@ -8,4 +8,6 @@ package com.example.myplayer.service
 interface IService {
     fun isPlaying():Boolean
     fun updatePlayStart()
+    fun getDuration(): Int
+    fun getProgress(): Int
 }
