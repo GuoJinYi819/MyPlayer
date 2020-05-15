@@ -6,6 +6,7 @@ import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
 import com.example.myplayer.bean.AudioBean
+import org.greenrobot.eventbus.EventBus
 
 /**ClassName: MyPlayer
  * @author 作者 : GuoJinYi
@@ -60,6 +61,13 @@ class AudioService :Service(){
 
         override fun onPrepared(mp: MediaPlayer?) {
             mediaPlayer?.start()
+            //通知界面更新
+            notifyUpdataUi()
+        }
+
+        private fun notifyUpdataUi() {
+            //通知界面更新
+            EventBus.getDefault().post(list?.get(position))
         }
 
         fun playItme(){
@@ -73,4 +81,6 @@ class AudioService :Service(){
 
         }
     }
+
+
 }

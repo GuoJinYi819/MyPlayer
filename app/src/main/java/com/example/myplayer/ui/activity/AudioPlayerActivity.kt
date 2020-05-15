@@ -15,6 +15,9 @@ import com.example.myplayer.bean.AudioBean
 import com.example.myplayer.service.AudioService
 import com.example.myplayer.service.IService
 import kotlinx.android.synthetic.main.activity_audio_player.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**ClassName: MyPlayer
  * @author 作者 : GuoJinYi
@@ -22,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_audio_player.*
  * @Description: 用途：完成特定功能
  */
 class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
+    var audioBean:AudioBean? = null
     override fun onClick(v: View?) {
         when(v?.id){
             R.id.start->updataPlayer()//更新播放状态
@@ -73,8 +77,21 @@ class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
 
     }
 
+    //接收 EventBus信息
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    fun onEventMain(itemBean:AudioBean){
+        this.audioBean = itemBean
+        //歌曲名
+        tvName.text = itemBean.display_name
+
+    }
+
+
 
     override fun initData() {
+        //注册EventBus
+        EventBus.getDefault().register(this)
+
         val list = intent.getParcelableArrayListExtra<AudioBean>("list")
         val position = intent.getIntExtra("position", -1)
 
@@ -118,6 +135,8 @@ class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
         super.onDestroy()
         //手动解绑服务
         unbindService(audioConnection)
+        //反注册EventBus
+        EventBus.getDefault().unregister(this)
     }
 
 }

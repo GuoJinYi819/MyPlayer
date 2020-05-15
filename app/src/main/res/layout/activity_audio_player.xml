@@ -15,17 +15,20 @@
             android:layout_height="40dp">
         </ImageView>
 
-        <TextView
+        <com.example.myplayer.widget.MarqueeTextView
+            android:singleLine="true"
             android:id="@+id/tvName"
             android:textSize="22sp"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="-1"
             android:textColor="#ff00"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:layout_centerHorizontal="true"
             android:text="哈哈哈哈"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="50dp">
 
-        </TextView>
+        </com.example.myplayer.widget.MarqueeTextView>
 
     </RelativeLayout>
 
