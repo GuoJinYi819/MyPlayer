@@ -7,6 +7,7 @@ import android.os.Binder
 import android.os.IBinder
 import com.example.myplayer.bean.AudioBean
 import org.greenrobot.eventbus.EventBus
+import kotlin.random.Random
 
 /**ClassName: MyPlayer
  * @author 作者 : GuoJinYi
@@ -18,6 +19,11 @@ class AudioService :Service(){
     var position:Int = 0
 
     var mediaPlayer:MediaPlayer? = null
+
+    val MODE_ALL = 1
+    val MODE_SINGLE = 2
+    val MODE_RANDOM = 3
+    val mode = MODE_ALL //当前播放模式
 
     val binder by lazy { AudioBinder() }
     override fun onCreate() {
@@ -38,7 +44,30 @@ class AudioService :Service(){
     }
 
 
-    inner class AudioBinder:Binder(),IService, MediaPlayer.OnPreparedListener {
+    inner class AudioBinder:Binder(),IService, MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnCompletionListener {
+        //歌曲播放完成之后回调
+        override fun onCompletion(mp: MediaPlayer?) {
+            //自动播放下一首
+            autoPlayNext()
+
+        }
+        //根据播放模式自动播放下一曲
+        private fun autoPlayNext() {
+            when(mode){
+                MODE_ALL->{
+                   list?.let {
+                       position = (position+1)% it.size
+                   }
+                }
+                MODE_SINGLE->{}
+                MODE_RANDOM->list?.let {
+                    position = Random.nextInt(it.size)
+            }
+            }
+            playItme()
+        }
+
         override fun seekTo(progress: Int) {
             mediaPlayer?.seekTo(progress)
         }
@@ -87,6 +116,7 @@ class AudioService :Service(){
             //播放音乐
             mediaPlayer?.let {
                 it.setOnPreparedListener(this)
+                it.setOnCompletionListener(this)
                 it.setDataSource(list?.get(position)?.data)
                 it.prepareAsync()
             }
