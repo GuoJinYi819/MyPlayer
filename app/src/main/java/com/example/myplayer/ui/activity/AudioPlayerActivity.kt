@@ -13,6 +13,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
+import android.widget.SeekBar
 import com.example.myplayer.R
 import com.example.myplayer.base.BaseActivity
 import com.example.myplayer.bean.AudioBean
@@ -99,6 +100,25 @@ class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
         //开始
         start.setOnClickListener(this)
 
+        //进度条变化 监听
+        progress_sk.setOnSeekBarChangeListener(object :SeekBar.OnSeekBarChangeListener{
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                //判断 是否是用户操作 造成的进度改变
+                if(!fromUser) return
+                //更新播放进度
+                iService?.seekTo(progress)
+                //更新界面进度显示
+                updateProgresss(progress)
+            }
+
+        })
     }
 
     //接收 EventBus信息

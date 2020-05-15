@@ -10,4 +10,5 @@ interface IService {
     fun updatePlayStart()
     fun getDuration(): Int
     fun getProgress(): Int
+    fun seekTo(progress: Int)
 }

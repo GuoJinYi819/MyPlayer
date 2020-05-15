@@ -39,6 +39,10 @@ class AudioService :Service(){
 
 
     inner class AudioBinder:Binder(),IService, MediaPlayer.OnPreparedListener {
+        override fun seekTo(progress: Int) {
+            mediaPlayer?.seekTo(progress)
+        }
+
         override fun getProgress(): Int {
             return mediaPlayer?.currentPosition?:0
         }
