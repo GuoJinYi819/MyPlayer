@@ -1,23 +1,123 @@
 package com.example.myplayer.ui.activity
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.media.MediaPlayer
+import android.os.IBinder
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.view.animation.LinearInterpolator
 import com.example.myplayer.R
 import com.example.myplayer.base.BaseActivity
 import com.example.myplayer.bean.AudioBean
+import com.example.myplayer.service.AudioService
+import com.example.myplayer.service.IService
+import kotlinx.android.synthetic.main.activity_audio_player.*
 
 /**ClassName: MyPlayer
  * @author 作者 : GuoJinYi
  * @version 创建时间：2020/5/15 0015 14:04
  * @Description: 用途：完成特定功能
  */
-class AudioPlayerActivity :BaseActivity(){
+class AudioPlayerActivity :BaseActivity(), View.OnClickListener {
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.start->updataPlayer()//更新播放状态
+        }
+    }
+
+    //更新播放状态
+    private fun updataPlayer() {
+        //更新播放状态
+        iService?.updatePlayStart()
+        //更新播放状态图标
+        updataPlayerStartBtn()
+    }
+
+    //根据播放状态更新图标
+    private fun updataPlayerStartBtn() {
+        //获取当前状态
+        //根据状态更新图标
+        val isPlayer = iService?.isPlaying()
+        isPlayer?.let {
+            if(isPlayer){
+                //正在播放
+                start.text = "暂停"
+            }else{
+                //没有播放
+                start.text = "播放"
+            }
+        }
+    }
+
+    val audioConnection by lazy { AudioConnection() }
+
     override fun initLayoutId(): Int {
         return R.layout.activity_audio_player
     }
 
+    override fun initListener() {
+        //设置动画
+        val animation = AnimationUtils.loadAnimation(this,R.anim.img_action)
+        val lin = LinearInterpolator()
+        animation.setInterpolator(lin)
+        ivAction.startAnimation(animation)
+        //销毁界面
+        ivBlack.setOnClickListener {
+            finish()
+        }
+        //开始
+        start.setOnClickListener(this)
+
+    }
+
+
     override fun initData() {
         val list = intent.getParcelableArrayListExtra<AudioBean>("list")
         val position = intent.getIntExtra("position", -1)
-        println("list==$list")
-        println("position==$position")
+
+        //开启服务 播放
+        val intent = Intent(this,AudioService::class.java)
+        intent.putExtra("list",list)
+        intent.putExtra("position",position)
+        //先开启
+        startService(intent)
+        //再绑定
+        bindService(intent,audioConnection,Context.BIND_AUTO_CREATE)
+
+
+//        //播放音乐
+//        val mediaPlayer = MediaPlayer()
+//
+//        mediaPlayer.setOnPreparedListener {
+//            //开始
+//            mediaPlayer.start()
+//        }
+//        mediaPlayer.setDataSource(list.get(position).data)
+//        mediaPlayer.prepareAsync()
+
     }
+
+    var iService:IService? = null
+
+    inner class AudioConnection:ServiceConnection{
+        override fun onServiceDisconnected(name: ComponentName?) {
+            //意外断开连接时
+        }
+
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            //service连接超时
+            iService = service as IService
+        }
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //手动解绑服务
+        unbindService(audioConnection)
+    }
+
 }
