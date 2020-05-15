@@ -12,8 +12,10 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import com.example.myplayer.R
+import com.example.myplayer.adapter.VbangAdapter
 import com.example.myplayer.base.BaseFragment
 import com.example.myplayer.util.CursorUtil
+import kotlinx.android.synthetic.main.fragment_vbang.*
 
 /**ClassName: MyPlayer
  * @author 作者 : GuoJinYi
@@ -32,6 +34,12 @@ class VBangFragment:BaseFragment() {
     override fun initView(): View? {
         return View.inflate(context,R.layout.fragment_vbang,null)
 
+    }
+    var adapter:VbangAdapter? = null
+    override fun initListener() {
+
+        adapter = VbangAdapter(context,null)
+        listView.adapter = adapter
     }
 
     override fun initData() {
@@ -66,17 +74,24 @@ class VBangFragment:BaseFragment() {
        // AudioTask().execute(resolver)
         val  handler = object :AsyncQueryHandler(resolver){
             override fun onQueryComplete(token: Int, cookie: Any?, cursor: Cursor?) {
-                //查询完成回调
-                CursorUtil.logCursor(cursor!!)
+                //查询完成回调回来 打印
+               // CursorUtil.logCursor(cursor!!)
+                //刷新列表
+                //1 先设置数据源
+                //2 刷新adapter
+                (cookie as VbangAdapter).swapCursor(cursor)
             }
         }
         //开始查询
-        handler.startQuery(0,null,MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, arrayOf(
+        handler.startQuery(0,adapter,MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, arrayOf(
+                        MediaStore.Audio.Media._ID,
                         MediaStore.Audio.Media.DATA
                         , MediaStore.Audio.Media.SIZE, MediaStore.Audio.Media.DISPLAY_NAME
                         , MediaStore.Audio.Media.ARTIST
                     ), null, null, null)
     }
+
+
     //音乐查询 异步任务 asynctask
     class AudioTask:AsyncTask<ContentResolver,Void,Cursor>(){
         //在新线程中执行任务
@@ -97,4 +112,14 @@ class VBangFragment:BaseFragment() {
         }
 
     }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //关闭 cursor
+        // 1 获取 adapter cursor
+        // 将 adapter中的 cursor设置为null
+        adapter?.changeCursor(null)
+    }
+
 }

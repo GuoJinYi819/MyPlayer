@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:padding="5dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:src="@mipmap/ic_launcher"
+        android:layout_width="100dp"
+        android:layout_height="100dp">
+    </ImageView>
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="100dp">
+        <TextView
+            android:id="@+id/title"
+            android:text="歌曲名"
+            android:textSize="22sp"
+            android:maxLines="1"
+            android:textColor="#400"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </TextView>
+        <TextView
+            android:id="@+id/artist"
+            android:text="歌曲名"
+            android:textSize="18sp"
+            android:maxLines="1"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </TextView>
+    </LinearLayout>
+    <TextView
+        android:gravity="center"
+        android:id="@+id/size"
+        android:text="10MB"
+        android:textSize="18sp"
+        android:maxLines="1"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp">
+
+    </TextView>
+</LinearLayout>
